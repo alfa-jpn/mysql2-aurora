@@ -1,0 +1,27 @@
+# Temporary files.
+*.gem
+*.rbc
+.bundle
+.config
+.yardoc
+Gemfile.lock
+InstalledFiles
+
+# Temporary directories.
+pkg/
+tmp/
+temp/
+vendor/bundle/
+
+# Test result files.
+spec/reports
+test/tmp
+test/version_tmp
+coverage/
+.rspec_status
+
+# Document files.
+rdoc
+_yardoc
+doc
+lib/bundler/man

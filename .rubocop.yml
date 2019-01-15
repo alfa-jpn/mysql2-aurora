@@ -1,0 +1,105 @@
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - 'vendor/**/*'
+    - 'bin/{console,setup}'
+
+Style/BlockDelimiters:
+  EnforcedStyle: braces_for_chaining
+
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/ClassCheck:
+  EnforcedStyle: kind_of?
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/PerlBackrefs:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+Style/RegexpLiteral:
+  AllowInnerSlashes: true
+
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/AlignHash:
+  EnforcedColonStyle: table
+  EnforcedHashRocketStyle: table
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*'
+
+Layout/ExtraSpacing:
+  AllowForAlignment: true
+
+Layout/IndentArray:
+  EnforcedStyle: consistent
+
+Layout/IndentHash:
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyleForEmptyBraces: space
+
+Lint/HandleExceptions:
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+  ExcludedMethods:
+    - 'Gem::Specification.new'
+
+Metrics/ClassLength:
+  Max: 100
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/LineLength:
+  Max: 100
+  IgnoredPatterns:
+    - "'.+'"                                                      # Text
+    - '".+"'                                                      # Text
+    - '#.+'                                                       # Comment
+    - '/.+/'                                                      # Regex
+    - '([A-Z][A-Za-z\d]+::){2,}[A-Z]'                             # Long module name
+    - '([A-Z]+_){4,}[A-Z]'                                        # Long constant name
+
+Metrics/MethodLength:
+  Max: 25
+
+Performance/TimesMap:
+  Enabled: false

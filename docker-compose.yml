@@ -1,0 +1,17 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+    environment:
+      TEST_DB_HOST: 'mysql'
+      TEST_DB_USER: 'root'
+      TEST_DB_PASS: 'change_me'
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 'change_me'
