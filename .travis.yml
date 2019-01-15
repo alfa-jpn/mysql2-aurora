@@ -1,9 +1,10 @@
 sudo:     false
 language: ruby
 script:   ./bin/test
-cache:    bundler
 rvm:
   - 2.5.0
   - 2.6.0
-before_install:
-  - gem install bundler
+env:
+  - TEST_DB_HOST='127.0.0.1' TEST_DB_USER='root' TEST_DB_PASS=''
+services:
+  - mysql

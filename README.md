@@ -1,6 +1,10 @@
 # Mysql2::Aurora
 mysql2 plugin supporting aurora failover.
 
+[![Build Status](https://travis-ci.org/alfa-jpn/mysql2-aurora.svg?branch=master)](https://travis-ci.org/alfa-jpn/mysql2-aurora)
+[![Coverage Status](https://coveralls.io/repos/github/alfa-jpn/mysql2-aurora/badge.svg?branch=master)](https://coveralls.io/github/alfa-jpn/mysql2-aurora?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/57d8ee7b6f30d413314b/maintainability)](https://codeclimate.com/github/alfa-jpn/mysql2-aurora/maintainability)
+
 ## Installation
 
 Add this line to your application's Gemfile:
