@@ -54,7 +54,8 @@ RSpec.describe Mysql2::Aurora::Client do
 
     it 'Return result' do
       expect(subject).to be_instance_of(Mysql2::Result)
-      expect(subject.to_a).to eq([{ 'user' => 'root@%' }])
+      expect(subject.to_a.size).to eq(1)
+      expect(subject.to_a.first['user']).to match(/^root@.+$/)
     end
 
     it 'Call original query' do

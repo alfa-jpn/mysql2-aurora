@@ -12,7 +12,7 @@ module Mysql2
       attr_reader :client
 
       # Initialize class
-      # @override with reconnect options
+      # @note [Override] with reconnect options
       # @param [Hash] opts Options
       # @option opts [Integer] aurora_max_retry Max retry count, when failover. (Default: 5)
       def initialize(opts)
@@ -22,7 +22,7 @@ module Mysql2
       end
 
       # Execute query with reconnect
-      # @override with reconnect.
+      # @note [Override] with reconnect.
       def query(*args)
         try_count = 0
 
