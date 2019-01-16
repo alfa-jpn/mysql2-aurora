@@ -7,8 +7,6 @@ module Mysql2
   module Aurora
     # Implement client patch
     class Client
-      RETRY_INTERVAL_SECONDS = 1.5
-
       attr_reader :client
 
       # Initialize class
@@ -32,9 +30,12 @@ module Mysql2
           try_count += 1
 
           if e.message&.include?('--read-only') && try_count <= @max_retry
-            warn "[mysql2-aurora] Database is readonly. Retry after #{RETRY_INTERVAL_SECONDS}seconds"
-            sleep RETRY_INTERVAL_SECONDS
+            retry_interval_seconds = [1.5 * (try_count - 1), 10].min
+
+            warn "[mysql2-aurora] Database is readonly. Retry after #{retry_interval_seconds}seconds"
+            sleep retry_interval_seconds
             reconnect!
+
             retry
           else
             raise e
@@ -62,7 +63,7 @@ module Mysql2
       # @param [Array]  args  Method arguments
       # @param [Proc]   block Method block
       def method_missing(name, *args, &block) # rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
-        @client.public_send(name, *args, &block)
+        client.public_send(name, *args, &block)
       end
 
       # Delegate method call to Mysql2::Client.
