@@ -3,6 +3,6 @@ module Mysql2
     # Major Version: Support `mysql2` major version.
     # Minor Version: Support `mysql2` minor version.
     # Tiny Version:  Mysql2::Aurora version.
-    VERSION = '0.5.1'.freeze
+    VERSION = '0.5.2'.freeze
   end
 end

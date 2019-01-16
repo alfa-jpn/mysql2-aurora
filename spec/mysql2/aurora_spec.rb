@@ -4,7 +4,7 @@ RSpec.describe Mysql2::Aurora::Client do
       host:             ENV['TEST_DB_HOST'],
       username:         ENV['TEST_DB_USER'],
       password:         ENV['TEST_DB_PASS'],
-      aurora_max_retry: 2
+      aurora_max_retry: 10
     )
   end
 
@@ -65,14 +65,22 @@ RSpec.describe Mysql2::Aurora::Client do
 
     context 'When raise Mysql2::Error' do
       before :each do
-        allow_any_instance_of(Kernel).to receive(:warn)
-        allow_any_instance_of(Kernel).to receive(:sleep)
+        allow(client).to receive(:warn)
+        allow(client).to receive(:sleep)
+        allow(client).to receive(:reconnect!)
         allow(client.client).to receive(:query).and_raise(Mysql2::Error, 'ERROR 1290 (HY000): The MySQL server is running with the --read-only option so it cannot execute this statement')
       end
 
       it 'Retry query' do
-        expect(client).to receive(:reconnect!).exactly(2).times
-        expect(client.client).to receive(:query).exactly(3).times
+        expect(client).to receive(:reconnect!).exactly(10).times
+        expect(client.client).to receive(:query).exactly(11).times
+        expect { subject }.to raise_error(Mysql2::Error)
+      end
+
+      it 'Retry interval is valid' do
+        [0, 1.5, 3, 4.5, 6, 7.5, 9, 10, 10, 10].each do |seconds|
+          expect(client).to receive(:sleep).with(seconds).ordered
+        end
         expect { subject }.to raise_error(Mysql2::Error)
       end
 
