@@ -45,12 +45,16 @@ module Mysql2
       # Reconnect to database and Set `@client`
       # @note If client is not connected, Connect to database.
       def reconnect!
+        query_options = (@client&.query_options&.dup || {})
+
         begin
           @client&.close
         rescue StandardError
           nil
         end
+
         @client = Mysql2::Aurora::ORIGINAL_CLIENT_CLASS.new(@opts)
+        @client.query_options.merge!(query_options)
       end
 
       # Delegate method call to client.

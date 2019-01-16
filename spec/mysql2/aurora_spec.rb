@@ -109,7 +109,7 @@ RSpec.describe Mysql2::Aurora::Client do
 
     it 'Set new Mysql2::Client to #client' do
       expect { subject }.to change { client.client }
-      expect(subject).to be_instance_of(Mysql2::Aurora::ORIGINAL_CLIENT_CLASS)
+      expect(client.client).to be_instance_of(Mysql2::Aurora::ORIGINAL_CLIENT_CLASS)
     end
 
     it 'Close old #client' do
@@ -138,7 +138,18 @@ RSpec.describe Mysql2::Aurora::Client do
 
       it 'Set new Mysql2::Client to #client' do
         expect { subject }.to change { client.client }.from(nil)
-        expect(subject).to be_instance_of(Mysql2::Aurora::ORIGINAL_CLIENT_CLASS)
+        expect(client.client).to be_instance_of(Mysql2::Aurora::ORIGINAL_CLIENT_CLASS)
+      end
+    end
+
+    context 'When #query_options is changed' do
+      before :each do
+        expect(client.query_options[:as]).to eq(:hash)
+        client.query_options[:as] = :array
+      end
+
+      it '#query_options are inherited' do
+        expect { subject }.not_to change { client.query_options[:as] }.from(:array)
       end
     end
   end
