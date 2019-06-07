@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4.6
   Exclude:
     - 'vendor/**/*'
     - 'bin/{console,setup}'
