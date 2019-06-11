@@ -100,6 +100,3 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   Max: 25
-
-Performance/TimesMap:
-  Enabled: false
