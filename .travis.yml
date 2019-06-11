@@ -2,6 +2,7 @@ sudo:     false
 language: ruby
 script:   ./bin/test
 rvm:
+  - 2.4.6
   - 2.5.0
   - 2.6.0
 env:

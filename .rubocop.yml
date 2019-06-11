@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4.6
   Exclude:
     - 'vendor/**/*'
     - 'bin/{console,setup}'
@@ -57,10 +57,10 @@ Lint/AmbiguousBlockAssociation:
 Layout/ExtraSpacing:
   AllowForAlignment: true
 
-Layout/IndentArray:
+Layout/IndentFirstArrayElement:
   EnforcedStyle: consistent
 
-Layout/IndentHash:
+Layout/IndentFirstHashElement:
   EnforcedStyle: consistent
 
 Layout/MultilineMethodCallBraceLayout:
