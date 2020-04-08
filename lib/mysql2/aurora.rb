@@ -19,6 +19,11 @@ module Mysql2
         reconnect!
       end
 
+      def read_only_error?(msg)
+        return false if msg.nil?
+        msg.include?('--read-only') || msg.include?('--super-read-only')
+      end
+
       # Execute query with reconnect
       # @note [Override] with reconnect.
       def query(*args)
@@ -29,7 +34,7 @@ module Mysql2
         rescue Mysql2::Error => e
           try_count += 1
 
-          if e.message&.include?('--read-only') && try_count <= @max_retry
+          if read_only_error?(e.message) && try_count <= @max_retry
             retry_interval_seconds = [1.5 * (try_count - 1), 10].min
 
             warn "[mysql2-aurora] Database is readonly. Retry after #{retry_interval_seconds}seconds"
