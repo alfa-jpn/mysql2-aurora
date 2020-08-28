@@ -49,6 +49,34 @@ RSpec.describe Mysql2::Aurora::Client do
   end
 
   describe '#query' do
+    context 'When aurora_disconnect_on_readonly is true' do
+      let :client do
+        Mysql2::Client.new(
+          host:                          ENV['TEST_DB_HOST'],
+          username:                      ENV['TEST_DB_USER'],
+          password:                      ENV['TEST_DB_PASS'],
+          aurora_max_retry:              10,
+          aurora_disconnect_on_readonly: true
+        )
+      end
+
+      before :each do
+        allow(client).to receive(:warn)
+        allow(client.client).to receive(:query).and_raise(Mysql2::Error, 'ERROR 1290 (HY000): The MySQL server is running with the --read-only option so it cannot execute this statement')
+      end
+
+      subject do
+        client.query('SELECT CURRENT_USER() AS user')
+      end
+
+      describe '#query' do
+        it 'disconnects immediately' do
+          expect(client).to receive(:disconnect!)
+          expect { subject }.to raise_error(Mysql2::Error)
+        end
+      end
+    end
+
     subject do
       client.query('SELECT CURRENT_USER() AS user')
     end
