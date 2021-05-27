@@ -29,22 +29,22 @@ module Mysql2
         begin
           client.query(*args)
         rescue Mysql2::Error => e
+          raise e unless e.message&.include?('--read-only')
+
           try_count += 1
 
-          if e.message&.include?('--read-only')
-            if @disconnect_only
-              warn '[mysql2-aurora] Database is readonly, Aurora failover event likely occured, closing database connection'
-              disconnect!
-              raise e
-            elsif try_count <= @max_retry
-              retry_interval_seconds = [1.5 * (try_count - 1), 10].min
+          if @disconnect_only
+            warn '[mysql2-aurora] Database is readonly, Aurora failover event likely occured, closing database connection'
+            disconnect!
+          elsif try_count <= @max_retry
+            retry_interval_seconds = [1.5 * (try_count - 1), 10].min
 
-              warn "[mysql2-aurora] Database is readonly. Retry after #{retry_interval_seconds}seconds"
-              sleep retry_interval_seconds
-              reconnect!
-              retry
-            end
+            warn "[mysql2-aurora] Database is readonly. Retry after #{retry_interval_seconds}seconds"
+            sleep retry_interval_seconds
+            reconnect!
+            retry
           end
+
           raise e
         end
       end

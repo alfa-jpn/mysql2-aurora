@@ -4,9 +4,12 @@ RSpec.describe Mysql2::Aurora::Client do
       host:             ENV['TEST_DB_HOST'],
       username:         ENV['TEST_DB_USER'],
       password:         ENV['TEST_DB_PASS'],
-      aurora_max_retry: 10
+      aurora_max_retry: 10,
+      aurora_disconnect_on_readonly: aurora_disconnect_on_readonly
     )
   end
+
+  let(:aurora_disconnect_on_readonly) { false }
 
   describe 'Mysql2::Aurora::VERSION' do
     subject do
@@ -50,15 +53,7 @@ RSpec.describe Mysql2::Aurora::Client do
 
   describe '#query' do
     context 'When aurora_disconnect_on_readonly is true' do
-      let :client do
-        Mysql2::Client.new(
-          host:                          ENV['TEST_DB_HOST'],
-          username:                      ENV['TEST_DB_USER'],
-          password:                      ENV['TEST_DB_PASS'],
-          aurora_max_retry:              10,
-          aurora_disconnect_on_readonly: true
-        )
-      end
+      let(:aurora_disconnect_on_readonly) { true }
 
       before :each do
         allow(client).to receive(:warn)
