@@ -13,9 +13,11 @@ module Mysql2
       # @note [Override] with reconnect options
       # @param [Hash] opts Options
       # @option opts [Integer] aurora_max_retry Max retry count, when failover. (Default: 5)
+      # @option opts [Bool] aurora_disconnect_on_readonly, when readonly exception hit terminate the connection (Default: false)
       def initialize(opts)
-        @opts      = Mysql2::Util.key_hash_as_symbols(opts)
+        @opts = Mysql2::Util.key_hash_as_symbols(opts)
         @max_retry = @opts.delete(:aurora_max_retry) || 5
+        @disconnect_only = @opts.delete(:aurora_disconnect_on_readonly) || false
         reconnect!
       end
 
@@ -27,19 +29,23 @@ module Mysql2
         begin
           client.query(*args)
         rescue Mysql2::Error => e
+          raise e unless e.message&.include?('--read-only')
+
           try_count += 1
 
-          if e.message&.include?('--read-only') && try_count <= @max_retry
+          if @disconnect_only
+            warn '[mysql2-aurora] Database is readonly, Aurora failover event likely occured, closing database connection'
+            disconnect!
+          elsif try_count <= @max_retry
             retry_interval_seconds = [1.5 * (try_count - 1), 10].min
 
             warn "[mysql2-aurora] Database is readonly. Retry after #{retry_interval_seconds}seconds"
             sleep retry_interval_seconds
             reconnect!
-
             retry
-          else
-            raise e
           end
+
+          raise e
         end
       end
 
@@ -48,14 +54,17 @@ module Mysql2
       def reconnect!
         query_options = (@client&.query_options&.dup || {})
 
-        begin
-          @client&.close
-        rescue StandardError
-          nil
-        end
+        disconnect!
 
         @client = Mysql2::Aurora::ORIGINAL_CLIENT_CLASS.new(@opts)
         @client.query_options.merge!(query_options)
+      end
+
+      # Close connection to database server
+      def disconnect!
+        @client&.close
+      rescue StandardError
+        nil
       end
 
       # Delegate method call to client.
