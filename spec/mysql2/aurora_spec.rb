@@ -186,6 +186,27 @@ RSpec.describe Mysql2::Aurora::Client do
     end
   end
 
+  describe 'connection flags' do
+    let :multi_client do
+      Mysql2::Client.new(
+        host:                          ENV['TEST_DB_HOST'],
+        username:                      ENV['TEST_DB_USER'],
+        password:                      ENV['TEST_DB_PASS'],
+        aurora_max_retry:              10,
+        aurora_disconnect_on_readonly: aurora_disconnect_on_readonly,
+        flags: ["MULTI_STATEMENTS"]
+      )
+    end
+
+    subject do
+      multi_client.query('SELECT CURRENT_USER() AS user; SELECT CURRENT_USER() AS user;')
+    end
+
+    it 'supports multi statements after reconnect' do
+      expect { subject }.to_not raise_error
+    end
+  end
+
   describe '#method_missing' do
     subject do
       client.ping

@@ -88,6 +88,12 @@ module Mysql2
       def self.const_missing(name)
         Mysql2::Aurora::ORIGINAL_CLIENT_CLASS.const_get(name)
       end
+
+      # Delegate const definition to class.
+      # @param [Symbol] name Const name
+      def self.const_defined?(name)
+        Mysql2::Aurora::ORIGINAL_CLIENT_CLASS.const_defined?(name)
+      end
     end
 
     # Swap Mysql2::Client
